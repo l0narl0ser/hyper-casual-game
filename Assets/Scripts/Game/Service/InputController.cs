@@ -21,7 +21,29 @@ namespace Game.Service
 #endif
             _messageSystem = Context.Instance.GetMessageSystem();
         }
-        
-        
+
+        private void Update()
+        {
+#if UNITY_ANDROID
+            var gyroscope = UnityEngine.InputSystem.Gyroscope.current;
+            Vector3 angularVelocity = gyroscope.angularVelocity.ReadValue();
+            Vector3 acceleration = Accelerometer.current.acceleration.ReadValue();
+            var inputModel = new InputModel(acceleration, angularVelocity);
+            _messageSystem.InputEvents.ChangeInput(inputModel);
+            Debug.Log(inputModel);
+#endif
+
+#if UNITY_EDITOR
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                
+            }
+
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                
+            }
+#endif
+        }
     }
 }
