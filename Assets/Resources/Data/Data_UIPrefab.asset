@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d19721d69d564bc9bc097861a19b1da6, type: 3}
+  m_Name: Data_UIPrefab
+  m_EditorClassIdentifier: 
+  _uiDialogModels:
+  - UIDialogType: 0
+    UIPrefab: {fileID: 7449344824137170140, guid: 291933dcaed370d499e274575406ed25, type: 3}
+  - UIDialogType: 1
+    UIPrefab: {fileID: 7449344824137170140, guid: 1246d4cefbe8b8b4b882ce3b177b704d, type: 3}
