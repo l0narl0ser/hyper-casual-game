@@ -29,6 +29,7 @@ namespace Game.Service
             Vector3 angularVelocity = gyroscope.angularVelocity.ReadValue();
             Vector3 acceleration = Accelerometer.current.acceleration.ReadValue();
             var inputModel = new InputModel(acceleration, angularVelocity);
+            //TODO: Какие-то преобразования 
             _messageSystem.InputEvents.ChangeInput(inputModel);
             Debug.Log(inputModel);
 #endif

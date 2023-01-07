@@ -14,8 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _controllerModels:
   - GameControllerType: 0
-    Prefab: {fileID: 0}
-  - GameControllerType: 0
-    Prefab: {fileID: 0}
-  - GameControllerType: 0
-    Prefab: {fileID: 0}
+    Prefab: {fileID: 7005510495963021052, guid: 28f1057715ddffb4a8682404ac209b0b, type: 3}
+  - GameControllerType: 1
+    Prefab: {fileID: 4147470909276635456, guid: 9d6a7c892390d5748baff0b3d5f6623f, type: 3}

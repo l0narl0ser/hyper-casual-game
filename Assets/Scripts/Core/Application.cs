@@ -1,7 +1,5 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using Gyroscope = UnityEngine.Gyroscope;
 
 namespace Core
 {
@@ -32,6 +30,7 @@ namespace Core
         public void Restart()
         {
             Time.timeScale = 1;
+            Context.Instance.ClearContext();
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
