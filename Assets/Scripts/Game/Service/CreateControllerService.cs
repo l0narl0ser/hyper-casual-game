@@ -12,10 +12,11 @@ namespace Game.Service
         {
             _gameControllerPrefabData = gameDataController.GameControllerPrefabData;
         }
-        public GameObject Create(GameControllerType type, Transform parent)
+        public GameObject Create(GameControllerType type, Transform parent, Vector2 position)
         {
             ControllerModel controllerModelByType = _gameControllerPrefabData.GetControllerModelByType(type);
             GameObject createdObject = GameObject.Instantiate(controllerModelByType.Prefab, parent);
+            createdObject.transform.position = position;
             return createdObject;
         }
     }

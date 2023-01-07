@@ -23,8 +23,11 @@ namespace Game.Service
 
         private void OnGameStarted()
         {
-            _createControllerService.Create(GameControllerType.Player, _gameWorldRoot.transform);
-            _createControllerService.Create(GameControllerType.StandardPlatform, _gameWorldRoot.transform);
+            _createControllerService.Create(GameControllerType.Player, _gameWorldRoot.transform, new Vector2(0, 0));
+            _createControllerService.Create(GameControllerType.StandardPlatform, _gameWorldRoot.transform,
+                new Vector2(0, -3));
+            _createControllerService.Create(GameControllerType.StandardPlatform, _gameWorldRoot.transform,
+                new Vector2(0, 5));
         }
 
         public void Dispose()
