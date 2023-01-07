@@ -28,21 +28,19 @@ namespace Game.Service
             var gyroscope = UnityEngine.InputSystem.Gyroscope.current;
             Vector3 angularVelocity = gyroscope.angularVelocity.ReadValue();
             Vector3 acceleration = Accelerometer.current.acceleration.ReadValue();
-            var inputModel = new InputModel(acceleration, angularVelocity);
-            //TODO: Какие-то преобразования 
-            _messageSystem.InputEvents.ChangeInput(inputModel);
+
             Debug.Log(inputModel);
 #endif
 
 #if UNITY_EDITOR
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                
+                _messageSystem.InputEvents.ChangeInput(-0.05f * Time.deltaTime);
             }
 
             if (Input.GetKey(KeyCode.RightArrow))
             {
-                
+                _messageSystem.InputEvents.ChangeInput(0.05f * Time.deltaTime);
             }
 #endif
         }

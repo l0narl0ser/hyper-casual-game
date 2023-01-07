@@ -5,11 +5,11 @@ namespace Game.Events
 {
     public class InputEvents
     {
-        public event Action<InputModel> OnInputChanged;
+        public event Action<float> OnInputChanged;
 
-        public void ChangeInput(InputModel inputModel)
+        public void ChangeInput(float deltaX)
         {
-            OnInputChanged?.Invoke(inputModel);
+            OnInputChanged?.Invoke(deltaX);
         }
     }
 }
