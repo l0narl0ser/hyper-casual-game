@@ -13,6 +13,7 @@ namespace Core
         private readonly GameDataController _gameDataController;
         private readonly WorldCreateService _worldCreateService;
         private readonly CreateControllerService _createControllerService;
+        private readonly PlayerCameraService _playerCameraService;
 
         private Context()
         {
@@ -21,6 +22,7 @@ namespace Core
             _gameDataController = new GameDataController();
             _createControllerService = new CreateControllerService(_gameDataController);
             _worldCreateService = new WorldCreateService(_messageSystem, _createControllerService);
+            _playerCameraService = new PlayerCameraService(_worldCreateService, _messageSystem);
         }
 
         public static Context Instance

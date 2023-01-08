@@ -11,7 +11,8 @@ namespace Game.Service
         private readonly MessageSystem _messageSystem;
         private readonly CreateControllerService _createControllerService;
         private GameObject _gameWorldRoot;
-
+        private PlayerController _playerController;
+        private bool _worldExists;
 
         public WorldCreateService(MessageSystem messageSystem, CreateControllerService createControllerService)
         {
@@ -23,7 +24,9 @@ namespace Game.Service
 
         private void OnGameStarted()
         {
-            _createControllerService.Create(GameControllerType.Player, _gameWorldRoot.transform, new Vector2(0, 0));
+            _worldExists = true;
+            GameObject playerObject = _createControllerService.Create(GameControllerType.Player, _gameWorldRoot.transform, new Vector2(0, 0));
+            _playerController = playerObject.GetComponent<PlayerController>();
             _createControllerService.Create(GameControllerType.StandardPlatform, _gameWorldRoot.transform,
                 new Vector2(0, -3));
             _createControllerService.Create(GameControllerType.StandardPlatform, _gameWorldRoot.transform,
@@ -34,5 +37,9 @@ namespace Game.Service
         {
             _messageSystem.PlayerEvents.OnStartGame -= OnGameStarted;
         }
+
+        public PlayerController PlayerController => _playerController;
+
+        public bool WorldExists => _worldExists;
     }
 }
