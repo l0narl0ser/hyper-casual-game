@@ -28,8 +28,9 @@ namespace Game.Service
             var gyroscope = UnityEngine.InputSystem.Gyroscope.current;
             Vector3 angularVelocity = gyroscope.angularVelocity.ReadValue();
             Vector3 acceleration = Accelerometer.current.acceleration.ReadValue();
-
-            Debug.Log(inputModel);
+            
+            _messageSystem.InputEvents.ChangeInput(acceleration.x * Time.deltaTime);
+            Debug.LogWarning("acceleration = " + acceleration.ToString() + " ,angularVelocity = " + angularVelocity.ToString());
 #endif
 
 #if UNITY_EDITOR
