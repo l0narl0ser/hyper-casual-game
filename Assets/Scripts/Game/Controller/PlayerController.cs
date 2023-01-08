@@ -8,6 +8,7 @@ namespace Game.Controller
     {
         [SerializeField] private float _playerSpeed = 5000;
         [SerializeField] private Rigidbody2D _rigidbody;
+        [SerializeField] private SpriteRenderer _doudleMainSpriteRender;
 
         private MessageSystem _messageSystem;
 
@@ -19,8 +20,16 @@ namespace Game.Controller
 
         private void OnPlayerInputChanged(float deltaX)
         {
-            _rigidbody.velocity = new Vector2(deltaX * _playerSpeed, _rigidbody.velocity.y);
+            if (deltaX < 0)
+            {
+                _doudleMainSpriteRender.flipX = true;
+            }
 
+            if (deltaX > 0)
+            {
+                _doudleMainSpriteRender.flipX = false;
+            }
+            _rigidbody.velocity = new Vector2(deltaX * _playerSpeed, _rigidbody.velocity.y);
         }
 
         public void Trigger(Vector2 pushVector)
@@ -29,7 +38,6 @@ namespace Game.Controller
             {
                 return;
             }
-            
             _rigidbody.velocity = Vector2.up * pushVector;
         }
 

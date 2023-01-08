@@ -30,7 +30,6 @@ namespace Game.Service
             Vector3 acceleration = Accelerometer.current.acceleration.ReadValue();
             
             _messageSystem.InputEvents.ChangeInput(acceleration.x * Time.deltaTime);
-            Debug.LogWarning("acceleration = " + acceleration.ToString() + " ,angularVelocity = " + angularVelocity.ToString());
 #endif
 
 #if UNITY_EDITOR
