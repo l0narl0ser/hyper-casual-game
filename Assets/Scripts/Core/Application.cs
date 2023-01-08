@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -24,6 +25,7 @@ namespace Core
 
         private void Awake()
         {
+            DOTween.Init();
             Context.Instance.GetSnapshotManager().Load();
         }
 

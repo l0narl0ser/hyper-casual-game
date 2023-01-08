@@ -35,12 +35,12 @@ namespace Game.Service
 #if UNITY_EDITOR
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                _messageSystem.InputEvents.ChangeInput(-0.05f * Time.deltaTime);
+                _messageSystem.InputEvents.ChangeInput(-1 * Time.deltaTime);
             }
 
             if (Input.GetKey(KeyCode.RightArrow))
             {
-                _messageSystem.InputEvents.ChangeInput(0.05f * Time.deltaTime);
+                _messageSystem.InputEvents.ChangeInput(1 * Time.deltaTime);
             }
 #endif
         }

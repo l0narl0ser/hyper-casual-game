@@ -1,5 +1,4 @@
-﻿using System;
-using Core;
+﻿using Core;
 using UnityEngine;
 
 namespace Game.Controller
@@ -7,6 +6,7 @@ namespace Game.Controller
     [RequireComponent(typeof(Rigidbody2D))]
     public class PlayerController : MonoBehaviour, IPlatformTriggerable
     {
+        [SerializeField] private float _playerSpeed = 5000;
         [SerializeField] private Rigidbody2D _rigidbody;
 
         private MessageSystem _messageSystem;
@@ -19,10 +19,8 @@ namespace Game.Controller
 
         private void OnPlayerInputChanged(float deltaX)
         {
-            Debug.Log($"DEltax = {deltaX}");
-            var newPosition = transform.position;
-            newPosition +=
-                new Vector3(newPosition.x + deltaX, newPosition.y, newPosition.z);
+            _rigidbody.velocity = new Vector2(deltaX * _playerSpeed, _rigidbody.velocity.y);
+
         }
 
         public void Trigger(Vector2 pushVector)
@@ -31,11 +29,8 @@ namespace Game.Controller
             {
                 return;
             }
-
-            _rigidbody.velocity = Vector2.zero;
-            _rigidbody.angularVelocity = 0;
-            _rigidbody.angularDrag = 0;
-            _rigidbody.AddForce(pushVector);
+            
+            _rigidbody.velocity = Vector2.up * pushVector;
         }
 
         private void OnDestroy()
