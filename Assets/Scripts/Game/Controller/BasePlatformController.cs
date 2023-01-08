@@ -1,9 +1,8 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Game.Controller
 {
-    public class BasePlatformController : MonoBehaviour
+    public class BasePlatformController : MonoBehaviour, IRemovable
     {
         [SerializeField] private float _pushUpForce = 15;
 
@@ -14,6 +13,16 @@ namespace Game.Controller
             {
                 platformTriggerable.Trigger(new Vector2(0, _pushUpForce));
             }
+        }
+
+        public void Remove()
+        {
+            Destroy(gameObject);
+        }
+
+        public Vector2 GetPosition()
+        {
+            return gameObject.transform.position;
         }
     }
 }

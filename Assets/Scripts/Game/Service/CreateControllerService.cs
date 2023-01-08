@@ -19,5 +19,12 @@ namespace Game.Service
             createdObject.transform.position = position;
             return createdObject;
         }
+        
+        public T Create<T>(GameControllerType type, Transform parent, Vector2 position)
+        {
+            GameObject gameObject = Create(type, parent, position);
+            return gameObject.GetComponent<T>();
+        }
+        
     }
 }
