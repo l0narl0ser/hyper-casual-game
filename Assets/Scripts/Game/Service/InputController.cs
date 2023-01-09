@@ -13,7 +13,7 @@ namespace Game.Service
 
         private void Awake()
         {
-#if UNITY_ANDROID
+#if !UNITY_EDITOR
             InputSystem.EnableDevice(UnityEngine.InputSystem.Gyroscope.current);
             InputSystem.EnableDevice(Accelerometer.current);
             InputSystem.EnableDevice(AttitudeSensor.current);
@@ -21,7 +21,28 @@ namespace Game.Service
 #endif
             _messageSystem = Context.Instance.GetMessageSystem();
         }
-        
-        
+
+        private void Update()
+        {
+#if !UNITY_EDITOR
+            var gyroscope = UnityEngine.InputSystem.Gyroscope.current;
+            Vector3 angularVelocity = gyroscope.angularVelocity.ReadValue();
+            Vector3 acceleration = Accelerometer.current.acceleration.ReadValue();
+            
+            _messageSystem.InputEvents.ChangeInput(acceleration.x * Time.deltaTime);
+#endif
+
+#if UNITY_EDITOR
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                _messageSystem.InputEvents.ChangeInput(-1 * Time.deltaTime);
+            }
+
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                _messageSystem.InputEvents.ChangeInput(1 * Time.deltaTime);
+            }
+#endif
+        }
     }
 }

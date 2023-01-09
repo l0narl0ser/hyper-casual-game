@@ -3,5 +3,6 @@
     public enum GameControllerType
     {
         Player,
+        StandardPlatform
     }
 }

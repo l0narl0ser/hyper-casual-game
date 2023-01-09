@@ -1,7 +1,6 @@
+using DG.Tweening;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using Gyroscope = UnityEngine.Gyroscope;
 
 namespace Core
 {
@@ -26,12 +25,14 @@ namespace Core
 
         private void Awake()
         {
+            DOTween.Init();
             Context.Instance.GetSnapshotManager().Load();
         }
 
         public void Restart()
         {
             Time.timeScale = 1;
+            Context.Instance.ClearContext();
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
