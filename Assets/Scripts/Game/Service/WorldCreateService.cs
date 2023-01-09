@@ -5,6 +5,7 @@ using Core;
 using Game.Controller;
 using UniRx;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Game.Service
 {
@@ -14,16 +15,19 @@ namespace Game.Service
         private readonly MessageSystem _messageSystem;
         private readonly CreateControllerService _createControllerService;
         private readonly GameObject _gameWorldRoot;
+        private readonly BoundService _boundService;
 
-
+        private Vector2 _lastGeneratedPlatformPosition;
         private CompositeDisposable _compositeDisposable;
         private PlayerController _playerController;
         private bool _worldExists;
         private List<IRemovable> _allRemovables = new List<IRemovable>();
 
-        public WorldCreateService(MessageSystem messageSystem, CreateControllerService createControllerService)
+        public WorldCreateService(MessageSystem messageSystem, CreateControllerService createControllerService,
+            BoundService boundService)
         {
             _messageSystem = messageSystem;
+            _boundService = boundService;
             _createControllerService = createControllerService;
             _messageSystem.PlayerEvents.OnStartGame += OnGameStarted;
             _gameWorldRoot = GameObject.Find(CONTAINER_NAME);
@@ -31,13 +35,16 @@ namespace Game.Service
 
         private void OnGameStarted()
         {
-            _worldExists = true;
+
             GameObject playerObject = _createControllerService.Create(GameControllerType.Player,
                 _gameWorldRoot.transform, new Vector2(0, 4));
             _playerController = playerObject.GetComponent<PlayerController>();
-
-            CreateStartPlatforms();
+            _lastGeneratedPlatformPosition = new Vector2(0, -10);
+            
+            GeneratePlatforms();
             CreateBoundChecker();
+            
+            _worldExists = true;
         }
 
         private void CreateBoundChecker()
@@ -55,24 +62,36 @@ namespace Game.Service
             foreach (IRemovable removable in _allRemovables.ToList())
             {
                 float removablePosition = removable.GetPosition().y;
-                if (playerYPosition - removablePosition > 20)
+                if (playerYPosition - removablePosition > 20) //TODO : Вынести в константы
                 {
                     removable.Remove();
                     _allRemovables.Remove(removable);
                 }
             }
+            //TODO:// ВЫнести в константы и зависит от минимальнной позиции по рандомному игрику
+
+            if (_lastGeneratedPlatformPosition.y - playerYPosition < 30)
+            {
+                GeneratePlatforms();
+            }
         }
 
-        private void CreateStartPlatforms()
+
+        public void GeneratePlatforms()
         {
-            int yPosition = 0;
-            for (int i = 0; i < 15; i++)
+            int roundedLeftPosition = Mathf.RoundToInt(_boundService.LeftXPosition) + 3; //TODO : в константы
+            int roundedRightPosition = Mathf.RoundToInt(_boundService.RightXPosition) - 3;
+
+            for (int i = 0; i < 10; i++)
             {
+                int deltaYPosition = Random.Range(3, 7); // TODO вынести в кностанты
+                int xPosition = Random.Range(roundedLeftPosition, roundedRightPosition);
+
+                _lastGeneratedPlatformPosition =
+                    new Vector2(xPosition, _lastGeneratedPlatformPosition.y + deltaYPosition);
                 IRemovable platform = _createControllerService.Create<IRemovable>(GameControllerType.StandardPlatform,
-                    _gameWorldRoot.transform,
-                    new Vector2(0, yPosition));
+                    _gameWorldRoot.transform, _lastGeneratedPlatformPosition);
                 _allRemovables.Add(platform);
-                yPosition += 7;
             }
         }
 

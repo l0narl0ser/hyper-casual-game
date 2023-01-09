@@ -28,7 +28,9 @@ namespace Game.Service
             _gameCamera = Camera.main;
             _gameCamera.transform.position = VectorCameraStartPosition;
             _lateDisposable = new CompositeDisposable();
+            
             Observable.EveryLateUpdate()
+                .Where(_ => _worldCreateService.WorldExists)
                 .Subscribe(_ =>  UpdateCameraPosition())
                 .AddTo(_lateDisposable);
         }

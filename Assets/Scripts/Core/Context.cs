@@ -21,10 +21,14 @@ namespace Core
             _messageSystem = new MessageSystem();
             _snapshotManager = new SnapshotManager();
             _gameDataController = new GameDataController();
+            
             _createControllerService = new CreateControllerService(_gameDataController);
-            _worldCreateService = new WorldCreateService(_messageSystem, _createControllerService);
-            _playerCameraService = new PlayerCameraService(_worldCreateService, _messageSystem);
             _boundService = new BoundService(_messageSystem);
+
+
+            _worldCreateService = new WorldCreateService(_messageSystem, _createControllerService, _boundService);
+            
+            _playerCameraService = new PlayerCameraService(_worldCreateService, _messageSystem);
         }
 
         public static Context Instance
