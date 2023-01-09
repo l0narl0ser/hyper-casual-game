@@ -14,6 +14,7 @@ namespace Core
         private readonly WorldCreateService _worldCreateService;
         private readonly CreateControllerService _createControllerService;
         private readonly PlayerCameraService _playerCameraService;
+        private readonly BoundService _boundService;
 
         private Context()
         {
@@ -23,6 +24,7 @@ namespace Core
             _createControllerService = new CreateControllerService(_gameDataController);
             _worldCreateService = new WorldCreateService(_messageSystem, _createControllerService);
             _playerCameraService = new PlayerCameraService(_worldCreateService, _messageSystem);
+            _boundService = new BoundService(_messageSystem);
         }
 
         public static Context Instance
@@ -66,6 +68,11 @@ namespace Core
         public CreateControllerService GetCreateControlService()
         {
             return _createControllerService;
+        }
+
+        public BoundService GetBoundService()
+        {
+            return _boundService;
         }
     }
 }

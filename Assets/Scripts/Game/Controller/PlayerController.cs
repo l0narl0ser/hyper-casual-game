@@ -1,4 +1,6 @@
-﻿using Core;
+﻿using System;
+using Core;
+using Game.Service;
 using UnityEngine;
 
 namespace Game.Controller
@@ -11,11 +13,28 @@ namespace Game.Controller
         [SerializeField] private SpriteRenderer _doudleMainSpriteRender;
 
         private MessageSystem _messageSystem;
+        private BoundService _boundService;
 
         private void Awake()
         {
             _messageSystem = Context.Instance.GetMessageSystem();
+            _boundService = Context.Instance.GetBoundService();
             _messageSystem.InputEvents.OnInputChanged += OnPlayerInputChanged;
+        }
+
+        private void FixedUpdate()
+        {
+            Vector3 playerPosition = transform.position;
+            
+            if (playerPosition.x > _boundService.RightXPosition)
+            {
+                transform.position = new Vector3(_boundService.LeftXPosition, playerPosition.y, playerPosition.z);
+            }
+
+            if (playerPosition.x < _boundService.LeftXPosition)
+            {
+                transform.position = new Vector3(_boundService.RightXPosition, playerPosition.y, playerPosition.z);
+            }
         }
 
         private void OnPlayerInputChanged(float deltaX)

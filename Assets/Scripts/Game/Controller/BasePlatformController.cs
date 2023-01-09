@@ -4,7 +4,7 @@ namespace Game.Controller
 {
     public class BasePlatformController : MonoBehaviour, IRemovable
     {
-        [SerializeField] private float _pushUpForce = 15;
+        [SerializeField] private float _pushUpForce;
 
         private void OnTriggerEnter2D(Collider2D other)
         {

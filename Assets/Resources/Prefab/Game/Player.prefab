@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35b7109d099e4a09808cc3e390295d1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerSpeed: 100
+  _playerSpeed: 400
   _rigidbody: {fileID: 6029407344273722043}
   _doudleMainSpriteRender: {fileID: 7005510495321901561}
 --- !u!61 &251138003429868654
@@ -172,7 +172,7 @@ Rigidbody2D:
   m_Mass: 3
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 3
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
