@@ -43,7 +43,6 @@ namespace Game.Service
             
             GeneratePlatforms();
             CreateBoundChecker();
-            
             _worldExists = true;
         }
 
