@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 
 namespace Game.Service
 {
-    public class WorldCreateService : IDisposable
+    public class WorldControlService : IDisposable
     {
         private const string CONTAINER_NAME = "WorldContainer";
         private readonly MessageSystem _messageSystem;
@@ -18,29 +18,42 @@ namespace Game.Service
         private readonly BoundService _boundService;
 
         private Vector2 _lastGeneratedPlatformPosition;
-        private CompositeDisposable _compositeDisposable;
+        private CompositeDisposable _boundUpdater;
         private PlayerController _playerController;
         private bool _worldExists;
         private List<IRemovable> _allRemovables = new List<IRemovable>();
 
-        public WorldCreateService(MessageSystem messageSystem, CreateControllerService createControllerService,
+        public WorldControlService(MessageSystem messageSystem, CreateControllerService createControllerService,
             BoundService boundService)
         {
             _messageSystem = messageSystem;
             _boundService = boundService;
             _createControllerService = createControllerService;
             _messageSystem.PlayerEvents.OnStartGame += OnGameStarted;
+            _messageSystem.PlayerEvents.OnPlayerDieAnimationFinished += OnPlayerDieAnimationFinished;
             _gameWorldRoot = GameObject.Find(CONTAINER_NAME);
+        }
+
+        private void OnPlayerDieAnimationFinished()
+        {
+            foreach (IRemovable removable in _allRemovables)
+            {
+                removable.Remove();
+            }
+
+            _allRemovables.Clear();
+            _boundUpdater?.Dispose();
+            _playerController.Remove();
+            _worldExists = false;
         }
 
         private void OnGameStarted()
         {
-
             GameObject playerObject = _createControllerService.Create(GameControllerType.Player,
                 _gameWorldRoot.transform, new Vector2(0, 4));
             _playerController = playerObject.GetComponent<PlayerController>();
             _lastGeneratedPlatformPosition = new Vector2(0, -10);
-            
+
             GeneratePlatforms();
             CreateBoundChecker();
             _worldExists = true;
@@ -48,10 +61,10 @@ namespace Game.Service
 
         private void CreateBoundChecker()
         {
-            _compositeDisposable = new CompositeDisposable();
+            _boundUpdater = new CompositeDisposable();
             Observable.Interval(TimeSpan.FromSeconds(0.5))
                 .Subscribe(_ => UpdateBoundPositions())
-                .AddTo(_compositeDisposable);
+                .AddTo(_boundUpdater);
         }
 
         private void UpdateBoundPositions()
@@ -61,7 +74,7 @@ namespace Game.Service
             foreach (IRemovable removable in _allRemovables.ToList())
             {
                 float removablePosition = removable.GetPosition().y;
-                if (playerYPosition - removablePosition > 20) //TODO : Вынести в константы
+                if (_boundService.IsYDownCamera(removablePosition)) //TODO : Вынести в константы
                 {
                     removable.Remove();
                     _allRemovables.Remove(removable);
@@ -97,7 +110,7 @@ namespace Game.Service
         public void Dispose()
         {
             _messageSystem.PlayerEvents.OnStartGame -= OnGameStarted;
-            _compositeDisposable?.Dispose();
+            _boundUpdater?.Dispose();
         }
 
         public PlayerController PlayerController => _playerController;

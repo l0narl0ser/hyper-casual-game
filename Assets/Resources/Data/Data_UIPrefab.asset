@@ -17,3 +17,5 @@ MonoBehaviour:
     UIPrefab: {fileID: 7449344824137170140, guid: 291933dcaed370d499e274575406ed25, type: 3}
   - UIDialogType: 1
     UIPrefab: {fileID: 7449344824137170140, guid: 1246d4cefbe8b8b4b882ce3b177b704d, type: 3}
+  - UIDialogType: 2
+    UIPrefab: {fileID: 7449344824137170140, guid: d628737286003a04fbb86f65f5d68799, type: 3}
