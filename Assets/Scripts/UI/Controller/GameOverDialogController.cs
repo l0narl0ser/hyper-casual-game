@@ -2,6 +2,7 @@
 using Core;
 using UnityEngine;
 using UnityEngine.UI;
+using Application = Core.Application;
 
 namespace UI.Controller
 {
@@ -10,20 +11,23 @@ namespace UI.Controller
         [SerializeField] private Button _goToMenu;
         [SerializeField] private Button _restartGame;
 
+        private MessageSystem _messageSystem;
+
         private void Awake()
         {
             _restartGame.onClick.AddListener(OnRestartButtonClick);
             _goToMenu.onClick.AddListener(OnGoToMenuButtonClick);
+            _messageSystem = Context.Instance.GetMessageSystem();
         }
 
         private void OnGoToMenuButtonClick()
         {
-            throw new NotImplementedException();
+            Application.Instance.Restart();
         }
 
         private void OnRestartButtonClick()
         {
-            throw new NotImplementedException();
+            _messageSystem.PlayerEvents.StartGame(); 
         }
 
         public void Show()

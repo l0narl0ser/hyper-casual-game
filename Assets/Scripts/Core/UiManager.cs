@@ -17,10 +17,10 @@ namespace Core
             _messageSystem = Context.Instance.GetMessageSystem();
             _gameDataController = Context.Instance.GetGameDataController();
             _messageSystem.PlayerEvents.OnStartGame += OnStartGame;
-            _messageSystem.PlayerEvents.OnPlayerDead += OnPlayerDead;
+            _messageSystem.PlayerEvents.OnPlayerDieAnimationFinished += OnPlayerDeadAnimationFinish;
         }
 
-        private void OnPlayerDead()
+        private void OnPlayerDeadAnimationFinish()
         {
             _dialogControllers[UIDialogType.GameplayDialog].Hide();
             _dialogControllers[UIDialogType.GameOverDialog].Show();
@@ -29,6 +29,7 @@ namespace Core
         private void OnStartGame()
         {
             _dialogControllers[UIDialogType.MainDialog].Hide();
+            _dialogControllers[UIDialogType.GameOverDialog].Hide();
             _dialogControllers[UIDialogType.GameplayDialog].Show();
         }
 
@@ -58,7 +59,7 @@ namespace Core
         private void OnDestroy()
         {
             _messageSystem.PlayerEvents.OnStartGame -= OnStartGame;
-            _messageSystem.PlayerEvents.OnPlayerDead -= OnPlayerDead;
+            _messageSystem.PlayerEvents.OnPlayerDieAnimationFinished -= OnPlayerDeadAnimationFinish;
 
         }
     }
