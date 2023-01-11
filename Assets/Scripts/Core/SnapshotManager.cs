@@ -19,6 +19,10 @@ namespace Core
             return _playerScore;
         }
 
+        public void SetScore(int score)
+        {
+            _playerScore = score;
+        }
         public void Save()
         {
             PlayerPrefs.SetInt(PlayerScoreKey, _playerScore);
