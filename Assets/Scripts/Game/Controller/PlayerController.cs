@@ -13,13 +13,23 @@ namespace Game.Controller
 
         private MessageSystem _messageSystem;
         private BoundService _boundService;
+        private CreateControllerService _createControllerService;
         private bool _playerDead;
 
         private void Awake()
         {
             _messageSystem = Context.Instance.GetMessageSystem();
             _boundService = Context.Instance.GetBoundService();
-            _messageSystem.InputEvents.OnInputChanged += OnPlayerInputChanged;
+            _createControllerService = Context.Instance.GetCreateControlService();
+            _messageSystem.InputEvents.OnInputAccelerationChanged += OnPlayerInputAccelerationChanged;
+            _messageSystem.InputEvents.OnTouched += OnTouched;
+        }
+
+        private void OnTouched(Vector2 touchPosition)
+        {
+            _createControllerService.Create<BulletController>(GameControllerType.Bullet, transform.parent,
+                transform.position);
+            
         }
 
         private void FixedUpdate()
@@ -58,7 +68,7 @@ namespace Game.Controller
             }
         }
 
-        private void OnPlayerInputChanged(float deltaX)
+        private void OnPlayerInputAccelerationChanged(float deltaX)
         {
             if (_playerDead)
             {
@@ -87,7 +97,7 @@ namespace Game.Controller
 
         private void OnDestroy()
         {
-            _messageSystem.InputEvents.OnInputChanged -= OnPlayerInputChanged;
+            _messageSystem.InputEvents.OnInputAccelerationChanged -= OnPlayerInputAccelerationChanged;
         }
 
         public bool PlayerDead => _playerDead;

@@ -43,6 +43,12 @@ namespace Game.Service
             return leftDownPosition.y > yPosition;
         }
 
+        public bool IsYUpCamera(float yPosition)
+        {
+            Vector3 topRightPosition = _gameCamera.ScreenToWorldPoint(new Vector3(_screenWidth,_screenHeight));
+            return yPosition > topRightPosition.y;
+        }
+
         public void Dispose()
         {
             _messageSystem.PlayerEvents.OnStartGame -= OnStartGame;

@@ -10,6 +10,7 @@ namespace Game.Service
     public class InputController : MonoBehaviour
     {
         private MessageSystem _messageSystem;
+        private bool touchStarted;
 
         private void Awake()
         {
@@ -24,6 +25,51 @@ namespace Game.Service
 
         private void Update()
         {
+            DetectMoving();
+            DetectTap();
+        }
+
+        private void DetectTap()
+        {
+            
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+            if (Input.GetMouseButtonDown(0))
+            {
+                _messageSystem.InputEvents.Touch(Input.mousePosition);
+            }
+
+#else
+            if(Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+                if (touch.phase == TouchPhase.Moved )
+                {
+                    return;
+                }
+
+                if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+                {
+                    touchStarted = false;
+                }
+
+                if (touch.phase == TouchPhase.Began && touchStarted)
+                {
+                   return;
+                }
+                
+                if (touch.phase == TouchPhase.Began)
+                {
+                    touchStarted = true;                   
+
+                    _messageSystem.InputEvents.Touch(touch.position);
+
+                }
+            }
+#endif
+        }
+
+        private void DetectMoving()
+        {
 #if !UNITY_EDITOR
             var gyroscope = UnityEngine.InputSystem.Gyroscope.current;
             Vector3 angularVelocity = gyroscope.angularVelocity.ReadValue();
@@ -35,12 +81,12 @@ namespace Game.Service
 #if UNITY_EDITOR
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                _messageSystem.InputEvents.ChangeInput(-1 * Time.deltaTime);
+                _messageSystem.InputEvents.ChangeAcceleration(-1 * Time.deltaTime);
             }
 
             if (Input.GetKey(KeyCode.RightArrow))
             {
-                _messageSystem.InputEvents.ChangeInput(1 * Time.deltaTime);
+                _messageSystem.InputEvents.ChangeAcceleration(1 * Time.deltaTime);
             }
 #endif
         }
