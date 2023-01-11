@@ -1,27 +1,25 @@
-﻿using Core;
-using TMPro;
+﻿using System;
+using Core;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 namespace UI.Controller
 {
-    public class GameplayDialogController : MonoBehaviour, IDialogController
+    public class PauseDialogController : MonoBehaviour, IDialogController
     {
-        [SerializeField] private Button _pauseButton;
-
-        [SerializeField] private TextMeshProUGUI _playerScore;
-
+        [SerializeField] private Button _resumeButton;
         private MessageSystem _messageSystem;
 
         private void Awake()
         {
-            _pauseButton.onClick.AddListener(OnPauseButtonClick);
+            _resumeButton.onClick.AddListener(OnResumeGame);
             _messageSystem = Context.Instance.GetMessageSystem();
         }
 
-        private void OnPauseButtonClick()
+        private void OnResumeGame()
         {
-            _messageSystem.PlayerEvents.PauseGame();
+            _messageSystem.PlayerEvents.UnpauseGame();
         }
 
         public void Show()

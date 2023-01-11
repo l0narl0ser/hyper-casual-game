@@ -15,6 +15,7 @@ namespace Core
         private readonly CreateControllerService _createControllerService;
         private readonly PlayerCameraService _playerCameraService;
         private readonly BoundService _boundService;
+        private readonly PauseService _pauseService;
 
         private Context()
         {
@@ -29,6 +30,8 @@ namespace Core
             _worldControlService = new WorldControlService(_messageSystem, _createControllerService, _boundService);
             
             _playerCameraService = new PlayerCameraService(_worldControlService, _messageSystem);
+
+            _pauseService = new PauseService(_messageSystem);
         }
 
         public static Context Instance

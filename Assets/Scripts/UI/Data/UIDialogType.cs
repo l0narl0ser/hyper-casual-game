@@ -4,6 +4,7 @@
     {
         MainDialog,
         GameplayDialog,
-        GameOverDialog
+        GameOverDialog,
+        PauseDialog
     }
 }

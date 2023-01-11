@@ -18,6 +18,20 @@ namespace Core
             _gameDataController = Context.Instance.GetGameDataController();
             _messageSystem.PlayerEvents.OnStartGame += OnStartGame;
             _messageSystem.PlayerEvents.OnPlayerDieAnimationFinished += OnPlayerDeadAnimationFinish;
+            _messageSystem.PlayerEvents.OnPlayerPaused += OnPlayerPaused;
+            _messageSystem.PlayerEvents.OnPlayerUnpaused += OnPlayerUnpaused;
+        }
+
+        private void OnPlayerUnpaused()
+        {
+            _dialogControllers[UIDialogType.PauseDialog].Hide();
+            _dialogControllers[UIDialogType.GameplayDialog].Show();
+        }
+
+        private void OnPlayerPaused()
+        {
+            _dialogControllers[UIDialogType.PauseDialog].Show();
+            _dialogControllers[UIDialogType.GameplayDialog].Hide();
         }
 
         private void OnPlayerDeadAnimationFinish()
@@ -60,7 +74,8 @@ namespace Core
         {
             _messageSystem.PlayerEvents.OnStartGame -= OnStartGame;
             _messageSystem.PlayerEvents.OnPlayerDieAnimationFinished -= OnPlayerDeadAnimationFinish;
-
+            _messageSystem.PlayerEvents.OnPlayerPaused -= OnPlayerPaused;
+            _messageSystem.PlayerEvents.OnPlayerUnpaused -= OnPlayerUnpaused;
         }
     }
 }

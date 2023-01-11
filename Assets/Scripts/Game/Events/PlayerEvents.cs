@@ -6,7 +6,8 @@ namespace Game.Events
     {
         public event Action OnStartGame;
         public event Action OnPlayerDead;
-
+        public event Action OnPlayerPaused;
+        public event Action OnPlayerUnpaused;
         public event Action OnPlayerDieAnimationFinished;
 
 
@@ -23,6 +24,16 @@ namespace Game.Events
         public void PlayerDead()
         {
             OnPlayerDead?.Invoke();
+        }
+
+        public void PauseGame()
+        {
+            OnPlayerPaused?.Invoke();
+        }
+
+        public void UnpauseGame()
+        {
+            OnPlayerUnpaused?.Invoke();
         }
     }
 }
