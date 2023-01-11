@@ -1,6 +1,4 @@
-﻿
-
-using Game.Service;
+﻿using Game.Service;
 
 namespace Core
 {
@@ -16,22 +14,24 @@ namespace Core
         private readonly PlayerCameraService _playerCameraService;
         private readonly BoundService _boundService;
         private readonly PauseService _pauseService;
+        private readonly ScoreService _scoreService;
 
         private Context()
         {
             _messageSystem = new MessageSystem();
             _snapshotManager = new SnapshotManager();
             _gameDataController = new GameDataController();
-            
+
             _createControllerService = new CreateControllerService(_gameDataController);
             _boundService = new BoundService(_messageSystem);
 
 
             _worldControlService = new WorldControlService(_messageSystem, _createControllerService, _boundService);
-            
+
             _playerCameraService = new PlayerCameraService(_worldControlService, _messageSystem);
 
             _pauseService = new PauseService(_messageSystem);
+            _scoreService = new ScoreService(_worldControlService, _messageSystem, _snapshotManager);
         }
 
         public static Context Instance
@@ -52,11 +52,16 @@ namespace Core
         {
             _instance = null;
         }
+
         public MessageSystem GetMessageSystem()
         {
             return _messageSystem;
         }
 
+        public ScoreService GetScoreService()
+        {
+            return _scoreService;
+        }
         public SnapshotManager GetSnapshotManager()
         {
             return _snapshotManager;
