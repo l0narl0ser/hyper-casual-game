@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UI.Data;
 using UnityEngine;
@@ -18,12 +17,34 @@ namespace Core
             _messageSystem = Context.Instance.GetMessageSystem();
             _gameDataController = Context.Instance.GetGameDataController();
             _messageSystem.PlayerEvents.OnStartGame += OnStartGame;
+            _messageSystem.PlayerEvents.OnPlayerDieAnimationFinished += OnPlayerDeadAnimationFinish;
+            _messageSystem.PlayerEvents.OnPlayerPaused += OnPlayerPaused;
+            _messageSystem.PlayerEvents.OnPlayerUnpaused += OnPlayerUnpaused;
+        }
+
+        private void OnPlayerUnpaused()
+        {
+            _dialogControllers[UIDialogType.PauseDialog].Hide();
+            _dialogControllers[UIDialogType.GameplayDialog].Show();
+        }
+
+        private void OnPlayerPaused()
+        {
+            _dialogControllers[UIDialogType.PauseDialog].Show();
+            _dialogControllers[UIDialogType.GameplayDialog].Hide();
+        }
+
+        private void OnPlayerDeadAnimationFinish()
+        {
+            _dialogControllers[UIDialogType.GameplayDialog].Hide();
+            _dialogControllers[UIDialogType.GameOverDialog].Show();
         }
 
         private void OnStartGame()
         {
-            _dialogControllers[UIDialogType.MainMenu].Hide();
-            _dialogControllers[UIDialogType.GameplayMenu].Show();
+            _dialogControllers[UIDialogType.MainDialog].Hide();
+            _dialogControllers[UIDialogType.GameOverDialog].Hide();
+            _dialogControllers[UIDialogType.GameplayDialog].Show();
         }
 
         private void Start()
@@ -46,12 +67,15 @@ namespace Core
 
         private void ConfigureStartView()
         {
-            _dialogControllers[UIDialogType.MainMenu].Show();
+            _dialogControllers[UIDialogType.MainDialog].Show();
         }
 
         private void OnDestroy()
         {
             _messageSystem.PlayerEvents.OnStartGame -= OnStartGame;
+            _messageSystem.PlayerEvents.OnPlayerDieAnimationFinished -= OnPlayerDeadAnimationFinish;
+            _messageSystem.PlayerEvents.OnPlayerPaused -= OnPlayerPaused;
+            _messageSystem.PlayerEvents.OnPlayerUnpaused -= OnPlayerUnpaused;
         }
     }
 }

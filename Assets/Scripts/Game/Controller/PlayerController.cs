@@ -1,12 +1,11 @@
-﻿using System;
-using Core;
+﻿using Core;
 using Game.Service;
 using UnityEngine;
 
 namespace Game.Controller
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class PlayerController : MonoBehaviour, IPlatformTriggerable
+    public class PlayerController : MonoBehaviour, IPlatformTriggerable, IRemovable
     {
         [SerializeField] private float _playerSpeed = 5000;
         [SerializeField] private Rigidbody2D _rigidbody;
@@ -14,6 +13,7 @@ namespace Game.Controller
 
         private MessageSystem _messageSystem;
         private BoundService _boundService;
+        private bool _playerDead;
 
         private void Awake()
         {
@@ -24,8 +24,29 @@ namespace Game.Controller
 
         private void FixedUpdate()
         {
+            if (_playerDead)
+            {
+                return;
+            }
             Vector3 playerPosition = transform.position;
             
+            CheckXPlayerPosition(playerPosition);
+            CheckIsPlayerDead(playerPosition);
+        }
+
+        private void CheckIsPlayerDead(Vector3 playerPosition)
+        {
+            if (!_boundService.IsYDownCamera(playerPosition.y))
+            {
+                return;
+            }
+            
+            _playerDead = true;
+            _messageSystem.PlayerEvents.PlayerDead();
+        }
+
+        private void CheckXPlayerPosition(Vector3 playerPosition)
+        {
             if (playerPosition.x > _boundService.RightXPosition)
             {
                 transform.position = new Vector3(_boundService.LeftXPosition, playerPosition.y, playerPosition.z);
@@ -39,6 +60,10 @@ namespace Game.Controller
 
         private void OnPlayerInputChanged(float deltaX)
         {
+            if (_playerDead)
+            {
+                return;
+            }
             if (deltaX < 0)
             {
                 _doudleMainSpriteRender.flipX = true;
@@ -63,6 +88,17 @@ namespace Game.Controller
         private void OnDestroy()
         {
             _messageSystem.InputEvents.OnInputChanged -= OnPlayerInputChanged;
+        }
+
+        public bool PlayerDead => _playerDead;
+        public void Remove()
+        {
+            Destroy(gameObject);
+        }
+
+        public Vector2 GetPosition()
+        {
+            return transform.position;
         }
     }
 }

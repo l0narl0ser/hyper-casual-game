@@ -37,6 +37,12 @@ namespace Game.Service
 
         public float RightXPosition => _rightXPosition;
 
+        public bool IsYDownCamera(float yPosition)
+        {
+            Vector3 leftDownPosition = _gameCamera.ScreenToWorldPoint(new Vector3(0,0));
+            return leftDownPosition.y > yPosition;
+        }
+
         public void Dispose()
         {
             _messageSystem.PlayerEvents.OnStartGame -= OnStartGame;

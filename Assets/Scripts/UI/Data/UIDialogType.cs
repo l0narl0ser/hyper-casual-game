@@ -2,7 +2,9 @@
 {
     public enum UIDialogType
     {
-        MainMenu,
-        GameplayMenu
+        MainDialog,
+        GameplayDialog,
+        GameOverDialog,
+        PauseDialog
     }
 }
