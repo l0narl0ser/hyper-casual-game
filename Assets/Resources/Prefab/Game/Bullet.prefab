@@ -44,7 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b140b4b6f054444ca87ad8fb7e0ee398, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _offsetBullet: {x: 0, y: 1, z: 0}
   _bulletSpeed: 50
 --- !u!1 &6803578375091343288
 GameObject:

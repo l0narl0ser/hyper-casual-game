@@ -8,9 +8,9 @@ namespace Game.Controller
 {
     public class BulletController : MonoBehaviour, IRemovable
     {
-        [SerializeField] private Vector3 _offsetBullet;
         [SerializeField] private float _bulletSpeed = 3;
 
+        private Vector3 _direction;
         private BoundService _boundService;
 
         private void Awake()
@@ -26,7 +26,8 @@ namespace Game.Controller
                 return;
             }
 
-            var newPosition = transform.position + _offsetBullet;
+            var newPosition = new Vector3(transform.position.x + _direction.x, transform.position.y + _direction.y,
+                transform.position.z);
             transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * _bulletSpeed);
         }
 
@@ -38,6 +39,11 @@ namespace Game.Controller
         public Vector2 GetPosition()
         {
             return gameObject.transform.position;
+        }
+
+        public void SetDirection(Vector3 direction)
+        {
+            _direction = direction;
         }
     }
 }

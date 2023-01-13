@@ -75,7 +75,7 @@ namespace Game.Service
             Vector3 angularVelocity = gyroscope.angularVelocity.ReadValue();
             Vector3 acceleration = Accelerometer.current.acceleration.ReadValue();
             
-            _messageSystem.InputEvents.ChangeInput(acceleration.x * Time.deltaTime);
+            _messageSystem.InputEvents.ChangeAcceleration(acceleration.x * Time.deltaTime);
 #endif
 
 #if UNITY_EDITOR

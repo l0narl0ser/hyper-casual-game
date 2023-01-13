@@ -1,4 +1,5 @@
-﻿using Core;
+﻿using System;
+using Core;
 using Game.Service;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ namespace Game.Controller
         private MessageSystem _messageSystem;
         private BoundService _boundService;
         private CreateControllerService _createControllerService;
+        private PlayerCameraService _playerCameraService;
         private bool _playerDead;
 
         private void Awake()
@@ -23,13 +25,53 @@ namespace Game.Controller
             _createControllerService = Context.Instance.GetCreateControlService();
             _messageSystem.InputEvents.OnInputAccelerationChanged += OnPlayerInputAccelerationChanged;
             _messageSystem.InputEvents.OnTouched += OnTouched;
+            _playerCameraService = Context.Instance.GetPlayerCameraService();
         }
 
         private void OnTouched(Vector2 touchPosition)
         {
-            _createControllerService.Create<BulletController>(GameControllerType.Bullet, transform.parent,
+            Vector3 worldTouchPosition = _playerCameraService.GetGameCamera.ScreenToWorldPoint(touchPosition);
+            BulletController bulletController = _createControllerService.Create<BulletController>(GameControllerType.Bullet, transform.parent,
                 transform.position);
+
+
+            Vector2 leftTopPosition = _boundService.GetLeftTopPosition();
+            Vector2 rightTopPosition = _boundService.GetRightTopPosition();
+            Vector2 centerPosition = _boundService.GetCenterPosition();
+
+            float originalArea = MathUtils.Area(leftTopPosition, rightTopPosition, centerPosition);
+
+            float areaLeftRight = MathUtils.Area(leftTopPosition, rightTopPosition, worldTouchPosition);
+            float areaRightCenter = MathUtils.Area(centerPosition, rightTopPosition, worldTouchPosition);
+            float areaLeftCenter = MathUtils.Area(centerPosition, leftTopPosition, worldTouchPosition);
+
             
+            Debug.LogWarning($"center position {centerPosition} worldTouchPosition {worldTouchPosition} ");
+            if (Math.Abs(originalArea - (areaLeftCenter + areaLeftRight + areaRightCenter)) < 0.01f)
+            {
+                Debug.LogWarning("InToThee center");
+            }
+            else
+            {
+                if (centerPosition.x < worldTouchPosition.x)
+                {
+                    Debug.LogWarning("Right");
+                }
+                else
+                {
+                    Debug.LogWarning("left");
+                }
+            }
+            
+            
+            Vector3 direction = worldTouchPosition - transform.position;
+
+
+            
+            
+            
+            bulletController.SetDirection((direction).normalized);  
+
         }
 
         private void FixedUpdate()
@@ -98,6 +140,8 @@ namespace Game.Controller
         private void OnDestroy()
         {
             _messageSystem.InputEvents.OnInputAccelerationChanged -= OnPlayerInputAccelerationChanged;
+            _messageSystem.InputEvents.OnTouched -= OnTouched;
+
         }
 
         public bool PlayerDead => _playerDead;

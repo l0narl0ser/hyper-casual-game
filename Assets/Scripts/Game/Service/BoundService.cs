@@ -43,9 +43,22 @@ namespace Game.Service
             return leftDownPosition.y > yPosition;
         }
 
+        public Vector3 GetRightTopPosition()
+        {
+            return _gameCamera.ScreenToWorldPoint(new Vector3(_screenWidth,_screenHeight));
+        }
+        public Vector3 GetLeftTopPosition()
+        {
+            return _gameCamera.ScreenToWorldPoint(new Vector3(0,_screenHeight));
+        }
+        public Vector3 GetCenterPosition()
+        {
+            return _gameCamera.ScreenToWorldPoint(new Vector3(_screenWidth / 2,_screenHeight / 2));
+        }
+
         public bool IsYUpCamera(float yPosition)
         {
-            Vector3 topRightPosition = _gameCamera.ScreenToWorldPoint(new Vector3(_screenWidth,_screenHeight));
+            Vector3 topRightPosition = GetRightTopPosition();
             return yPosition > topRightPosition.y;
         }
 
