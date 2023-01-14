@@ -17,7 +17,7 @@ namespace Game.Service
         private readonly GameObject _gameWorldRoot;
         private readonly BoundService _boundService;
 
-        private Vector2 _lastGeneratedPlatformPosition;
+        private Vector2 _lastGeneratedPosition;
         private CompositeDisposable _boundUpdater;
         private PlayerController _playerController;
         private bool _worldExists;
@@ -52,7 +52,7 @@ namespace Game.Service
             GameObject playerObject = _createControllerService.Create(GameControllerType.Player,
                 _gameWorldRoot.transform, new Vector2(0, 4));
             _playerController = playerObject.GetComponent<PlayerController>();
-            _lastGeneratedPlatformPosition = new Vector2(0, -10);
+            _lastGeneratedPosition = new Vector2(0, -10);
 
             GeneratePlatforms();
             CreateBoundChecker();
@@ -82,7 +82,7 @@ namespace Game.Service
             }
             //TODO:// ВЫнести в константы и зависит от минимальнной позиции по рандомному игрику
 
-            if (_lastGeneratedPlatformPosition.y - playerYPosition < 30)
+            if (_lastGeneratedPosition.y - playerYPosition < 30)
             {
                 GeneratePlatforms();
             }
@@ -93,17 +93,29 @@ namespace Game.Service
         {
             int roundedLeftPosition = Mathf.RoundToInt(_boundService.LeftXPosition) + 3; //TODO : в константы
             int roundedRightPosition = Mathf.RoundToInt(_boundService.RightXPosition) - 3;
-
-            for (int i = 0; i < 10; i++)
+            
+            for (int i = 0; i < 12; i++)
             {
                 int deltaYPosition = Random.Range(3, 7); // TODO вынести в кностанты
                 int xPosition = Random.Range(roundedLeftPosition, roundedRightPosition);
 
-                _lastGeneratedPlatformPosition =
-                    new Vector2(xPosition, _lastGeneratedPlatformPosition.y + deltaYPosition);
-                IRemovable platform = _createControllerService.Create<IRemovable>(GameControllerType.StandardPlatform,
-                    _gameWorldRoot.transform, _lastGeneratedPlatformPosition);
-                _allRemovables.Add(platform);
+                bool needEnemy = Random.Range(0, 100) < 10;
+                
+                _lastGeneratedPosition =
+                    new Vector2(xPosition, _lastGeneratedPosition.y + deltaYPosition);
+                IRemovable removable;
+                if (needEnemy)
+                {
+                    removable = _createControllerService.Create<IRemovable>(GameControllerType.SimpleEnemy,
+                        _gameWorldRoot.transform, _lastGeneratedPosition);
+                }
+                else
+                {
+                    removable = _createControllerService.Create<IRemovable>(GameControllerType.StandardPlatform,
+                        _gameWorldRoot.transform, _lastGeneratedPosition);
+                }
+
+                _allRemovables.Add(removable);
             }
         }
 

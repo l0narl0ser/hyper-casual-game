@@ -87,6 +87,7 @@ namespace Game.Service
             MoveCamera(playerController);
         }
 
+
         private void MoveCamera(PlayerController playerController)
         {
             Vector3 position = _gameCamera.transform.position;
@@ -104,5 +105,7 @@ namespace Game.Service
             _messageSystem.PlayerEvents.OnPlayerDead -= OnPlayerDead;
             _lateDisposable?.Dispose();
         }
+
+        public Camera GetGameCamera => _gameCamera;
     }
 }

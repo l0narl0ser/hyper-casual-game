@@ -15,6 +15,7 @@ namespace Core
         private readonly BoundService _boundService;
         private readonly PauseService _pauseService;
         private readonly ScoreService _scoreService;
+        
 
         private Context()
         {
@@ -86,5 +87,12 @@ namespace Core
         {
             return _boundService;
         }
+
+        public PlayerCameraService GetPlayerCameraService()
+        {
+            return _playerCameraService;
+        }
+
+        
     }
 }

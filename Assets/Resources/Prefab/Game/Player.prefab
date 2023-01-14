@@ -131,6 +131,7 @@ MonoBehaviour:
   _playerSpeed: 400
   _rigidbody: {fileID: 6029407344273722043}
   _doudleMainSpriteRender: {fileID: 7005510495321901561}
+  _playerHitCollider2D: {fileID: 251138003429868654}
 --- !u!61 &251138003429868654
 BoxCollider2D:
   m_ObjectHideFlags: 0

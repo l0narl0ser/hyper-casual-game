@@ -3,6 +3,8 @@
     public enum GameControllerType
     {
         Player,
-        StandardPlatform
+        StandardPlatform,
+        Bullet,
+        SimpleEnemy
     }
 }
