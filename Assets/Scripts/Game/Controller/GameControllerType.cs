@@ -5,6 +5,6 @@
         Player,
         StandardPlatform,
         Bullet,
-        
+        SimpleEnemy
     }
 }

@@ -1,4 +1,5 @@
-﻿using Core;
+﻿using System;
+using Core;
 using Game.Service;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
@@ -29,6 +30,16 @@ namespace Game.Controller
             var newPosition = new Vector3(transform.position.x + _direction.x, transform.position.y + _direction.y,
                 transform.position.z);
             transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * _bulletSpeed);
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            IBulletTriggerable bulletTriggerable = other.GetComponent<IBulletTriggerable>();
+            if (bulletTriggerable == null)
+            {
+                return;
+            }
+            bulletTriggerable.TriggerOnBullet();
         }
 
         public void Remove()

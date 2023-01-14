@@ -19,3 +19,5 @@ MonoBehaviour:
     Prefab: {fileID: 4147470909276635456, guid: 8fa589b4c9dc7c8488ac244f72c663a3, type: 3}
   - GameControllerType: 2
     Prefab: {fileID: 4424093337850553011, guid: 457a0f3b4df7c774882fced45ef06d97, type: 3}
+  - GameControllerType: 3
+    Prefab: {fileID: 215653681677701161, guid: 77fd9076f60ce0745acce65ecf58ef4f, type: 3}

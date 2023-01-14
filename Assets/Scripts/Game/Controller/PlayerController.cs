@@ -6,12 +6,13 @@ using UnityEngine;
 namespace Game.Controller
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class PlayerController : MonoBehaviour, IPlatformTriggerable, IRemovable
+    public class PlayerController : MonoBehaviour, IPlatformTriggerable, IRemovable, IEnemyDyeable
     {
         private const float Epsilon = 0.01f;
         [SerializeField] private float _playerSpeed = 5000;
         [SerializeField] private Rigidbody2D _rigidbody;
         [SerializeField] private SpriteRenderer _doudleMainSpriteRender;
+        [SerializeField] private Collider2D _playerHitCollider2D;
 
         private MessageSystem _messageSystem;
         private BoundService _boundService;
@@ -97,8 +98,7 @@ namespace Game.Controller
                 return;
             }
 
-            _playerDead = true;
-            _messageSystem.PlayerEvents.PlayerDead();
+            Die();
         }
 
         private void CheckXPlayerPosition(Vector3 playerPosition)
@@ -160,6 +160,14 @@ namespace Game.Controller
         public Vector2 GetPosition()
         {
             return transform.position;
+        }
+
+        public void Die()
+        {
+            _playerDead = true;
+            _playerHitCollider2D.enabled = false;
+            _rigidbody.velocity = Vector2.zero;
+            _messageSystem.PlayerEvents.PlayerDead();
         }
     }
 }
