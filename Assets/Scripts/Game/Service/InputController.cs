@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Gyroscope = UnityEngine.Gyroscope;
+using TouchPhase = UnityEngine.TouchPhase;
 
 namespace Game.Service
 {
