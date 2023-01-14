@@ -8,6 +8,7 @@ namespace Game.Controller
     [RequireComponent(typeof(Rigidbody2D))]
     public class PlayerController : MonoBehaviour, IPlatformTriggerable, IRemovable
     {
+        private const float Epsilon = 0.01f;
         [SerializeField] private float _playerSpeed = 5000;
         [SerializeField] private Rigidbody2D _rigidbody;
         [SerializeField] private SpriteRenderer _doudleMainSpriteRender;
@@ -31,47 +32,49 @@ namespace Game.Controller
         private void OnTouched(Vector2 touchPosition)
         {
             Vector3 worldTouchPosition = _playerCameraService.GetGameCamera.ScreenToWorldPoint(touchPosition);
-            BulletController bulletController = _createControllerService.Create<BulletController>(GameControllerType.Bullet, transform.parent,
+            BulletController bulletController = _createControllerService.Create<BulletController>(
+                GameControllerType.Bullet, transform.parent,
                 transform.position);
 
+            Vector3 direction = SelectBulletDirection(worldTouchPosition);
+            bulletController.SetDirection(direction);
+        }
 
-            Vector2 leftTopPosition = _boundService.GetLeftTopPosition();
-            Vector2 rightTopPosition = _boundService.GetRightTopPosition();
-            Vector2 centerPosition = _boundService.GetCenterPosition();
-
-            float originalArea = MathUtils.Area(leftTopPosition, rightTopPosition, centerPosition);
-
-            float areaLeftRight = MathUtils.Area(leftTopPosition, rightTopPosition, worldTouchPosition);
-            float areaRightCenter = MathUtils.Area(centerPosition, rightTopPosition, worldTouchPosition);
-            float areaLeftCenter = MathUtils.Area(centerPosition, leftTopPosition, worldTouchPosition);
-
-            
-            Debug.LogWarning($"center position {centerPosition} worldTouchPosition {worldTouchPosition} ");
-            if (Math.Abs(originalArea - (areaLeftCenter + areaLeftRight + areaRightCenter)) < 0.01f)
+        private Vector3 SelectBulletDirection(Vector3 worldTouchPosition)
+        {
+            Vector3 leftTopPosition = _boundService.GetLeftTopPosition();
+            Vector3 rightTopPosition = _boundService.GetRightTopPosition();
+            Vector3 centerPosition = _boundService.GetCenterPosition();
+            Vector3 direction;
+            if (IsPointInAimedArea(worldTouchPosition, leftTopPosition, rightTopPosition, centerPosition))
             {
-                Debug.LogWarning("InToThee center");
+                direction = worldTouchPosition - transform.position;
             }
             else
             {
                 if (centerPosition.x < worldTouchPosition.x)
                 {
-                    Debug.LogWarning("Right");
+                    direction = rightTopPosition - transform.position;
                 }
                 else
                 {
-                    Debug.LogWarning("left");
+                    direction = leftTopPosition - transform.position;
                 }
             }
-            
-            
-            Vector3 direction = worldTouchPosition - transform.position;
 
+            return direction.normalized;
+        }
 
-            
-            
-            
-            bulletController.SetDirection((direction).normalized);  
+        private bool IsPointInAimedArea(Vector3 worldPosition, Vector3 leftTopPosition, Vector3 rightTopPosition,
+            Vector3 centerPosition)
+        {
+            float originalArea = MathUtils.Area(leftTopPosition, rightTopPosition, centerPosition);
 
+            float areaLeftRight = MathUtils.Area(leftTopPosition, rightTopPosition, worldPosition);
+            float areaRightCenter = MathUtils.Area(centerPosition, rightTopPosition, worldPosition);
+            float areaLeftCenter = MathUtils.Area(centerPosition, leftTopPosition, worldPosition);
+
+            return Math.Abs(originalArea - (areaLeftCenter + areaLeftRight + areaRightCenter)) < Epsilon;
         }
 
         private void FixedUpdate()
@@ -80,8 +83,9 @@ namespace Game.Controller
             {
                 return;
             }
+
             Vector3 playerPosition = transform.position;
-            
+
             CheckXPlayerPosition(playerPosition);
             CheckIsPlayerDead(playerPosition);
         }
@@ -92,7 +96,7 @@ namespace Game.Controller
             {
                 return;
             }
-            
+
             _playerDead = true;
             _messageSystem.PlayerEvents.PlayerDead();
         }
@@ -116,6 +120,7 @@ namespace Game.Controller
             {
                 return;
             }
+
             if (deltaX < 0)
             {
                 _doudleMainSpriteRender.flipX = true;
@@ -125,6 +130,7 @@ namespace Game.Controller
             {
                 _doudleMainSpriteRender.flipX = false;
             }
+
             _rigidbody.velocity = new Vector2(deltaX * _playerSpeed, _rigidbody.velocity.y);
         }
 
@@ -134,6 +140,7 @@ namespace Game.Controller
             {
                 return;
             }
+
             _rigidbody.velocity = Vector2.up * pushVector;
         }
 
@@ -141,10 +148,10 @@ namespace Game.Controller
         {
             _messageSystem.InputEvents.OnInputAccelerationChanged -= OnPlayerInputAccelerationChanged;
             _messageSystem.InputEvents.OnTouched -= OnTouched;
-
         }
 
         public bool PlayerDead => _playerDead;
+
         public void Remove()
         {
             Destroy(gameObject);
