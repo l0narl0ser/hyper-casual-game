@@ -32,6 +32,11 @@ namespace Game.Controller
 
         private void OnTouched(Vector2 touchPosition)
         {
+            if (_playerDead)
+            {
+                return;
+            }
+            
             Vector3 worldTouchPosition = _playerCameraService.GetGameCamera.ScreenToWorldPoint(touchPosition);
             BulletController bulletController = _createControllerService.Create<BulletController>(
                 GameControllerType.Bullet, transform.parent,

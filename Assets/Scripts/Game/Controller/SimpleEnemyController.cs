@@ -36,7 +36,8 @@ namespace Game.Controller
 
         public void TriggerOnBullet()
         {
-            Remove();
+            gameObject.SetActive(false);
+            enabled = false;
         }
 
         private void OnTriggerEnter2D(Collider2D col)
