@@ -7,5 +7,6 @@
         Bullet,
         SimpleEnemy,
         SpringPlatform,
+        StayEnemy
     }
 }

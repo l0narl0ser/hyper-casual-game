@@ -9,6 +9,7 @@ namespace Game.Controller
         private const int ChangeDirectionCoef = -1;
         [SerializeField] private int _deltaXBeforeChangeDirection;
         [SerializeField] private float _enemyMovingSpeed;
+        [SerializeField] private bool _enemyStay;
 
         private Vector3 _directionMoving = new Vector3(1, 0, 0);
         private BoundService _boundService;
@@ -20,6 +21,10 @@ namespace Game.Controller
 
         private void FixedUpdate()
         {
+            if (_enemyStay)
+            {
+                return;
+            }
             if (_boundService.LeftXPosition + _deltaXBeforeChangeDirection > transform.position.x)
             {
                 _directionMoving *= ChangeDirectionCoef;

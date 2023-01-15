@@ -60,7 +60,6 @@ namespace Game.Service
         {
             int roundedLeftPosition = Mathf.RoundToInt(_boundService.LeftXPosition) + DistanceFromEdge;
             int roundedRightPosition = Mathf.RoundToInt(_boundService.RightXPosition) - DistanceFromEdge;
-            int countEnemySpawnedInRound = 0;
             List<IRemovable> removables = new List<IRemovable>();
 
             for (int i = 0; i < CountPlatformsToSpawnInRound; i++)
@@ -69,6 +68,8 @@ namespace Game.Service
             }
 
             removables.Add(GenerateSpring(roundedLeftPosition, roundedRightPosition));
+            
+            int countEnemySpawnedInRound = 0;
 
             for (int i = 0; i < removables.Count - 1; i++)
             {
@@ -78,12 +79,21 @@ namespace Game.Service
                 }
 
                 countEnemySpawnedInRound++;
-                IRemovable removable = _createControllerService.Create<IRemovable>(GameControllerType.SimpleEnemy,
-                    _gameWorldRoot.transform, removables[i].GetPosition() + new Vector2(0, EnemyYOffsetFromPlatform));
+                var removable = GenerateEnemy(removables[i]);
                 removables.Add(removable);
             }
 
             return removables;
+        }
+
+        private IRemovable GenerateEnemy(IRemovable sourceRemovable)
+        {
+            GameControllerType typeEnemyToSpawn = Random.Range(0, 100) > 50
+                ? GameControllerType.SimpleEnemy
+                : GameControllerType.StayEnemy;
+            IRemovable removable = _createControllerService.Create<IRemovable>(typeEnemyToSpawn,
+                _gameWorldRoot.transform, sourceRemovable.GetPosition() + new Vector2(0, EnemyYOffsetFromPlatform));
+            return removable;
         }
 
         private IRemovable GeneratePlatform(int roundedLeftPosition, int roundedRightPosition)
