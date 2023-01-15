@@ -18,7 +18,6 @@ namespace Game.Service
         private readonly BoundService _boundService;
         private readonly List<IRemovable> _allRemovables = new List<IRemovable>();
         private LevelGenerator _levelGenerator;
-        private Vector2 _lastGeneratedPosition;
         private CompositeDisposable _boundUpdater;
         private PlayerController _playerController;
         private bool _worldExists;
@@ -81,7 +80,7 @@ namespace Game.Service
                 }
             }
 
-            if (_lastGeneratedPosition.y - playerYPosition < 30)
+            if (_levelGenerator.CanGenerateObjectsInNewRound(playerYPosition))
             {
                 _allRemovables.AddRange(_levelGenerator.GenerateObjects());
             }
