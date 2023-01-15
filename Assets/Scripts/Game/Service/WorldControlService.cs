@@ -55,7 +55,6 @@ namespace Game.Service
             _playerController = playerObject.GetComponent<PlayerController>();
 
             _allRemovables.AddRange( _levelGenerator.GenerateStartSpawn());
-            _allRemovables.AddRange( _levelGenerator.GenerateObjects());
             CreateBoundChecker();
             _worldExists = true;
         }
