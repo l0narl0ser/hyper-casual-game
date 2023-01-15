@@ -10,7 +10,7 @@ namespace Game.Service
         private const int MaxBorderRandomY = 9;
         private const int DistanceFromEdge = 3;
         private const int MaxCountEnemySpawnedInRound = 2;
-        private const int CountPlatformsToSpawnInRound = 12;
+        private const int CountPlatformsToSpawnInRound = 10;
         private const int DistanceBetweenPlatformsInStart = 3;
         private const int CountPlatformsInStart = 4;
         private const int RightDistanceToSpawnEnemy = 6;
@@ -47,18 +47,10 @@ namespace Game.Service
                 xOffset += DistanceBetweenPlatformsInStart;
                 generatedPlataforms.Add(removable);
             }
-            
+
             for (int i = 0; i < CountPlatformsToSpawnInRound; i++)
             {
-                int deltaYPosition = Random.Range(MinBorderRandomY, MaxBorderRandomY);
-                int xPosition = Random.Range(roundedLeftPosition, roundedRightPosition);
-                _lastGeneratedPosition =
-                    new Vector2(xPosition, _lastGeneratedPosition.y + deltaYPosition);
-
-
-                IRemovable removable = _createControllerService.Create<IRemovable>(GameControllerType.StandardPlatform,
-                    _gameWorldRoot.transform, _lastGeneratedPosition);
-                generatedPlataforms.Add(removable);
+                generatedPlataforms.Add(GeneratePlatform(roundedLeftPosition, roundedRightPosition));
             }
 
             return generatedPlataforms;
@@ -73,16 +65,10 @@ namespace Game.Service
 
             for (int i = 0; i < CountPlatformsToSpawnInRound; i++)
             {
-                int deltaYPosition = Random.Range(MinBorderRandomY, MaxBorderRandomY);
-                int xPosition = Random.Range(roundedLeftPosition, roundedRightPosition);
-                _lastGeneratedPosition =
-                    new Vector2(xPosition, _lastGeneratedPosition.y + deltaYPosition);
-
-
-                IRemovable removable = _createControllerService.Create<IRemovable>(GameControllerType.StandardPlatform,
-                    _gameWorldRoot.transform, _lastGeneratedPosition);
-                removables.Add(removable);
+                removables.Add(GeneratePlatform(roundedLeftPosition, roundedRightPosition));
             }
+
+            removables.Add(GenerateSpring(roundedLeftPosition, roundedRightPosition));
 
             for (int i = 0; i < removables.Count - 1; i++)
             {
@@ -100,11 +86,42 @@ namespace Game.Service
             return removables;
         }
 
+        private IRemovable GeneratePlatform(int roundedLeftPosition, int roundedRightPosition)
+        {
+            int deltaYPosition = Random.Range(MinBorderRandomY, MaxBorderRandomY);
+            int xPosition = Random.Range(roundedLeftPosition, roundedRightPosition);
+            _lastGeneratedPosition =
+                new Vector2(xPosition, _lastGeneratedPosition.y + deltaYPosition);
+
+
+            IRemovable removable = _createControllerService.Create<IRemovable>(GameControllerType.StandardPlatform,
+                _gameWorldRoot.transform, _lastGeneratedPosition);
+            return removable;
+        }
+
+        private IRemovable GenerateSpring(int roundedLeftPosition, int roundedRightPosition)
+        {
+            int deltaYSpringPlatform = Random.Range(MinBorderRandomY, MaxBorderRandomY);
+            int xSpringPlatform = Random.Range(roundedLeftPosition, roundedRightPosition);
+            _lastGeneratedPosition =
+                new Vector2(deltaYSpringPlatform, _lastGeneratedPosition.y + xSpringPlatform);
+
+            IRemovable removableSpring = _createControllerService.Create<IRemovable>(
+                GameControllerType.SpringPlatform,
+                _gameWorldRoot.transform, _lastGeneratedPosition);
+            return removableSpring;
+        }
+
         private bool CanSpawnEnemy(int countEnemySpawnedInRound, IRemovable firstPlatform, IRemovable secondPlatform)
         {
             float distanceByYBetweenPlatforms = secondPlatform.GetPosition().y - firstPlatform.GetPosition().y;
-            return countEnemySpawnedInRound <= MaxCountEnemySpawnedInRound &&
+            return countEnemySpawnedInRound < MaxCountEnemySpawnedInRound &&
                    distanceByYBetweenPlatforms > RightDistanceToSpawnEnemy;
+        }
+
+        public bool CanGenerateObjectsInNewRound(float playerYPosition)
+        {
+            return _lastGeneratedPosition.y - playerYPosition < 30;
         }
     }
 }
