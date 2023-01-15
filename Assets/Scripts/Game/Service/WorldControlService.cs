@@ -5,23 +5,23 @@ using Core;
 using Game.Controller;
 using UniRx;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Game.Service
 {
     public class WorldControlService : IDisposable
     {
+
         private const string CONTAINER_NAME = "WorldContainer";
         private readonly MessageSystem _messageSystem;
         private readonly CreateControllerService _createControllerService;
         private readonly GameObject _gameWorldRoot;
         private readonly BoundService _boundService;
-
+        private readonly List<IRemovable> _allRemovables = new List<IRemovable>();
+        private LevelGenerator _levelGenerator;
         private Vector2 _lastGeneratedPosition;
         private CompositeDisposable _boundUpdater;
         private PlayerController _playerController;
         private bool _worldExists;
-        private List<IRemovable> _allRemovables = new List<IRemovable>();
 
         public WorldControlService(MessageSystem messageSystem, CreateControllerService createControllerService,
             BoundService boundService)
@@ -32,6 +32,7 @@ namespace Game.Service
             _messageSystem.PlayerEvents.OnStartGame += OnGameStarted;
             _messageSystem.PlayerEvents.OnPlayerDieAnimationFinished += OnPlayerDieAnimationFinished;
             _gameWorldRoot = GameObject.Find(CONTAINER_NAME);
+            _levelGenerator = new LevelGenerator(_gameWorldRoot, _boundService, _createControllerService);
         }
 
         private void OnPlayerDieAnimationFinished()
@@ -52,9 +53,8 @@ namespace Game.Service
             GameObject playerObject = _createControllerService.Create(GameControllerType.Player,
                 _gameWorldRoot.transform, new Vector2(0, 4));
             _playerController = playerObject.GetComponent<PlayerController>();
-            _lastGeneratedPosition = new Vector2(0, -10);
 
-            GeneratePlatforms();
+            _allRemovables.AddRange( _levelGenerator.GenerateStartSpawn());
             CreateBoundChecker();
             _worldExists = true;
         }
@@ -74,50 +74,19 @@ namespace Game.Service
             foreach (IRemovable removable in _allRemovables.ToList())
             {
                 float removablePosition = removable.GetPosition().y;
-                if (_boundService.IsYDownCamera(removablePosition)) //TODO : Вынести в константы
+                if (_boundService.IsYDownCamera(removablePosition)) 
                 {
                     removable.Remove();
                     _allRemovables.Remove(removable);
                 }
             }
-            //TODO:// ВЫнести в константы и зависит от минимальнной позиции по рандомному игрику
 
             if (_lastGeneratedPosition.y - playerYPosition < 30)
             {
-                GeneratePlatforms();
+                _allRemovables.AddRange(_levelGenerator.GenerateObjects());
             }
         }
 
-
-        public void GeneratePlatforms()
-        {
-            int roundedLeftPosition = Mathf.RoundToInt(_boundService.LeftXPosition) + 3; //TODO : в константы
-            int roundedRightPosition = Mathf.RoundToInt(_boundService.RightXPosition) - 3;
-            
-            for (int i = 0; i < 12; i++)
-            {
-                int deltaYPosition = Random.Range(3, 7); // TODO вынести в кностанты
-                int xPosition = Random.Range(roundedLeftPosition, roundedRightPosition);
-
-                bool needEnemy = Random.Range(0, 100) < 10;
-                
-                _lastGeneratedPosition =
-                    new Vector2(xPosition, _lastGeneratedPosition.y + deltaYPosition);
-                IRemovable removable;
-                if (needEnemy)
-                {
-                    removable = _createControllerService.Create<IRemovable>(GameControllerType.SimpleEnemy,
-                        _gameWorldRoot.transform, _lastGeneratedPosition);
-                }
-                else
-                {
-                    removable = _createControllerService.Create<IRemovable>(GameControllerType.StandardPlatform,
-                        _gameWorldRoot.transform, _lastGeneratedPosition);
-                }
-
-                _allRemovables.Add(removable);
-            }
-        }
 
         public void Dispose()
         {

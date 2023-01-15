@@ -10,6 +10,7 @@ namespace Game.Service
 {
     public class InputController : MonoBehaviour
     {
+        private const float MinDeltaAcceleration = 0.03f;
         private MessageSystem _messageSystem;
         private bool touchStarted;
 
@@ -19,7 +20,7 @@ namespace Game.Service
             InputSystem.EnableDevice(UnityEngine.InputSystem.Gyroscope.current);
             InputSystem.EnableDevice(Accelerometer.current);
             InputSystem.EnableDevice(AttitudeSensor.current);
-            InputSystem.EnableDevice(GravitySensor.current);          
+            InputSystem.EnableDevice(GravitySensor.current);
 #endif
             _messageSystem = Context.Instance.GetMessageSystem();
         }
@@ -32,7 +33,6 @@ namespace Game.Service
 
         private void DetectTap()
         {
-            
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
             if (Input.GetMouseButtonDown(0))
             {
@@ -75,8 +75,13 @@ namespace Game.Service
             var gyroscope = UnityEngine.InputSystem.Gyroscope.current;
             Vector3 angularVelocity = gyroscope.angularVelocity.ReadValue();
             Vector3 acceleration = Accelerometer.current.acceleration.ReadValue();
-            
-            _messageSystem.InputEvents.ChangeAcceleration(acceleration.x * Time.deltaTime);
+
+            Debug.LogWarning(acceleration.x);
+            if (Math.Abs(acceleration.x) > MinDeltaAcceleration)
+            {
+                _messageSystem.InputEvents.ChangeAcceleration(acceleration.x * Time.deltaTime);
+            }
+
 #endif
 
 #if UNITY_EDITOR
